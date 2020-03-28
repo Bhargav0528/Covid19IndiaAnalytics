@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import {
   Button,
@@ -18,27 +17,14 @@ import {
   Input
 } from 'semantic-ui-react'
 
-// Heads up!
-// We using React Static to prerender our docs with server side rendering, this is a quite simple solution.
-// For more advanced usage please check Responsive docs under the "Usage" section.
-const getWidth = () => {
-  const isSSR = typeof window === 'undefined'
-
-  return isSSR ? Responsive.onlyTablet.minWidth : window.innerWidth
-}
-
-/* eslint-disable react/no-multi-comp */
-/* Heads up! HomepageHeading uses inline styling, however it's not the best practice. Use CSS or styled components for
- * such things.
- */
-const HomepageHeading = ({ mobile }) => (
+const HomepageHeading = () => (
   <Container text>
     <Header
       as='h1'
       content='Covid19 India Analytics'
       inverted
       style={{
-        fontSize: mobile ? '2em' : '4em',
+        fontSize: '4em',
         fontWeight: 'normal',
         marginBottom: 0
       }}
@@ -46,9 +32,6 @@ const HomepageHeading = ({ mobile }) => (
   </Container>
 )
 
-HomepageHeading.propTypes = {
-  mobile: PropTypes.bool,
-}
 
 /* Heads up!
  * Neither Semantic UI nor Semantic UI React offer a responsive navbar, however, it can be implemented easily.
@@ -57,39 +40,38 @@ HomepageHeading.propTypes = {
 
 const App = ({startAgeInput, endAgeInput, ageValue, onAgeCalculate}) => (
   <Segment style={{ padding: '8em 0em', borderBottomColor:'#fff' }} vertical>
-    <Grid container stackable verticalAlign='middle'>
+    <Grid  container stackable verticalAlign='middle' >
       <Grid.Row>
         <Grid.Column width={8}>
         <div>
         <Header as='h2' attached='top'>
           Age calculator
         </Header>
-        <Segment attached>
+        <Segment style={{width:'100%', paddingLeft:0, paddingRight:0, paddingBottom:0}} attached>
         <Grid container stackable verticalAlign='middle'>
         <Grid.Row>
-        <Grid.Column width={8}>
+        <Grid.Column style={{width:'100%', paddingLeft:'5%', paddingRight:'5%'}} width={8}>
         <Header as='h3'>Enter start age</Header>
-        </Grid.Column>
-        <Grid.Column width={8}>
-        <Header as='h3'>Enter end age</Header>
-        </Grid.Column>
-        </Grid.Row>
-        
-        <Grid.Row>
-        <Grid.Column width={8}>
+
         <Input 
+        style={{width:'50%', paddingLeft:'5%', paddingRight:'5%'}}
         laceholder=''
         onChange={(event,data)=>startAgeInput(data.value)} />
         </Grid.Column>
-        <Grid.Column width={8}>
+        <Grid.Column style={{width:'100%', paddingLeft:'5%', paddingRight:'5%'}} width={8}>
+        <Header as='h3'>Enter end age</Header>
         <Input 
+        style={{width:'50%', paddingLeft:'5%', paddingRight:'5%'}}
         placeholder=''
         onChange={(event,data)=>endAgeInput(data.value)} />
         </Grid.Column>
         </Grid.Row>
-        <Grid.Row>
-        <Grid.Column textAlign='center'>
+        
+        
+        <Grid.Row style={{width:'100%', paddingLeft:0, paddingRight:0}}>
+        <Grid.Column textAlign='center' style={{width:'100%', padding:0}}>
           <Button 
+          style={{width:'100%'}}
           size='huge'
           onClick={()=>onAgeCalculate()}>Calculate</Button>
         </Grid.Column>
@@ -130,11 +112,18 @@ class DesktopContainer extends Component {
     if(this.state.startAge.trim()==="" && this.state.endAge.trim()==="")
     {
       alert("Both the fields cannot be empty")
-    } else if(this.state.startAge.trim()!=="" && !(/^\d+$/.test(this.state.startAge))){
+    } else {
+    let startAgeValid = true
+    let endAgeValid = true
+    if(this.state.startAge.trim()!=="" && !(/^\d+$/.test(this.state.startAge))){
+      startAgeValid=false
       alert("Start age should be valid")
     } else if(this.state.endAge.trim()!=="" && !(/^\d+$/.test(this.state.endAge))) {
+      endAgeValid=false
       alert("End age should be valid")
-    } else if((this.state.startAge !== "" && this.state.endAge !=="" ) && this.state.startAge>this.state.endAge) {
+    } else if((this.state.startAge !== "" && this.state.endAge !=="" ) 
+      && startAgeValid && endAgeValid
+      && parseInt(this.state.startAge)>parseInt(this.state.endAge)) {
       alert("Start age should be smaller than end age")
     } else {
     fetch(`https://covid-india-analytics.herokuapp.com/calculateAge?startAge=${this.state.startAge}&endAge=${this.state.endAge}`)
@@ -148,6 +137,7 @@ class DesktopContainer extends Component {
       });
     }
   }
+  }
   
   render() {
     const { children } = this.props
@@ -155,7 +145,7 @@ class DesktopContainer extends Component {
     
     console.log(this.state)
     return (
-      <Responsive getWidth={getWidth} minWidth={Responsive.onlyTablet.minWidth} >
+      <div>
         <Visibility
           once={false}
           onBottomPassed={this.showFixedMenu}
@@ -191,16 +181,16 @@ class DesktopContainer extends Component {
           onAgeCalculate={this.onAgeCalculate}/>
 
           <Segment inverted style={{ 
-    position: 'absolute',
+    position: 'fixed',
     left: 0,
     bottom: 0,
     height: 50,
     width: '100%',
     overflow: 'hidden',
   }}>
-      <Container inverted style={{height: 50}}>
-        <Grid  inverted style={{height: 50}}> 
-          <Grid.Row inverted style={{height: 50}}>
+      <Container inverted >
+        <Grid  inverted > 
+          <Grid.Row inverted>
           <Header as='h4' inverted>
                 Developer - Bhargav BV
               </Header>
@@ -208,13 +198,10 @@ class DesktopContainer extends Component {
         </Grid>
       </Container>
     </Segment>
-      </Responsive>
+    </div>
     )
   }
 }
 
-DesktopContainer.propTypes = {
-  children: PropTypes.node,
-}
 
 export default DesktopContainer
