@@ -28,6 +28,19 @@
     <title>React App</title>
   </head>
   <body>
+    <script>
+      (function (window, document, tag, url, namespace) {
+        element = document.createElement(tag);
+        placement = document.getElementsByTagName(tag)[0];
+        element.async = 1;
+        element.id = "od-sdk";
+        element.setAttribute('data-id', 'NDA0XzE1OTQ0NDkyNjkwODdfNA==');
+        element.setAttribute('storeId', 's2');
+        element.setAttribute('employeeId', 'w2');
+        element.src = url;
+        placement.parentNode.insertBefore(element, placement);
+      })(window, document, 'script', '/webinapp-sdk-v1.min.js', 'od')
+    </script>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--
